@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { VRButton } from "three/addons/webxr/VRButton.js";
 
 
 
@@ -11,6 +12,9 @@ const ambientlight = new THREE.AmbientLight(0xFFFFFF, 0.2);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
+
+document.body.appendChild( VRButton.createButton( renderer ) );
+renderer.xr.enabled = true;
 
 const controls = new OrbitControls( camera, renderer.domElement );
 
@@ -35,9 +39,7 @@ scene.add(cube,cube2,directionallight,ambientlight);
 
 camera.position.z = 5;
 
-
-function animate() {
-	requestAnimationFrame( animate );
+renderer.setAnimationLoop( function () {
 
 	cube.rotation.x += 0.01;
 	cube.rotation.y += 0.01;
@@ -47,6 +49,5 @@ function animate() {
 	renderer.render( scene, camera);
 
     controls.update();
-}
 
-animate();
+} );
