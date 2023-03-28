@@ -25,7 +25,7 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 				document.body.appendChild( container );
 
 				scene = new THREE.Scene();
-				scene.background = new THREE.Color( 0x808080 );
+				scene.background = new THREE.Color( 0x202020 );
 
 				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
 				camera.position.set( 0, 1.6, 3 );
@@ -36,7 +36,7 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 
 				const floorGeometry = new THREE.PlaneGeometry( 4, 4 );
 				const floorMaterial = new THREE.MeshStandardMaterial( {
-					color: 0xeeeeee,
+					color: 0x303030,
 					roughness: 1.0,
 					metalness: 0.0
 				} );
@@ -54,44 +54,6 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 				light.shadow.camera.left = - 2;
 				light.shadow.mapSize.set( 4096, 4096 );
 				scene.add( light );
-
-				// const geometries = [
-				// 	new THREE.BoxGeometry( 0.2, 0.2, 0.2 ),
-				// 	new THREE.ConeGeometry( 0.2, 0.2, 64 ),
-				// 	new THREE.CylinderGeometry( 0.2, 0.2, 0.2, 64 ),
-				// 	new THREE.IcosahedronGeometry( 0.2, 8 ),
-				// 	new THREE.TorusGeometry( 0.2, 0.04, 64, 32 )
-				// ];
-
-				// for ( let i = 0; i < 50; i ++ ) {
-
-				// 	const geometry = geometries[ Math.floor( Math.random() * geometries.length ) ];
-				// 	const material = new THREE.MeshStandardMaterial( {
-				// 		color: Math.random() * 0xffffff,
-				// 		roughness: 0.7,
-				// 		metalness: 0.0
-				// 	} );
-
-				// 	const object = new THREE.Mesh( geometry, material );
-
-				// 	object.position.x = Math.random() * 4 - 2;
-				// 	object.position.y = Math.random() * 2;
-				// 	object.position.z = Math.random() * 4 - 2;
-
-				// 	object.rotation.x = Math.random() * 2 * Math.PI;
-				// 	object.rotation.y = Math.random() * 2 * Math.PI;
-				// 	object.rotation.z = Math.random() * 2 * Math.PI;
-
-				// 	object.scale.setScalar( Math.random() + 0.5 );
-
-				// 	object.castShadow = true;
-				// 	object.receiveShadow = true;
-
-				// 	group.add( object );
-
-				// }
-
-				//
 
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
@@ -111,8 +73,6 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 				scene.add( controller1 );
 
 				controller2 = renderer.xr.getController( 1 );
-				controller2.addEventListener( 'selectstart', onSelectStart );
-				controller2.addEventListener( 'selectend', onSelectEnd );
 				scene.add( controller2 );
 
 				const controllerModelFactory = new XRControllerModelFactory();
@@ -134,7 +94,6 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 				line.scale.z = 5;
 
 				controller1.add( line.clone() );
-				controller2.add( line.clone() );
 
 				raycaster = new THREE.Raycaster();
 
@@ -152,15 +111,20 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 				const yellow = new THREE.MeshToonMaterial({color: 0xFFFF00});
 				const black = new THREE.MeshToonMaterial({color: 0x000000});
 
+				const cyan2 = new THREE.MeshToonMaterial({color: 0x00FFFF});
+				const magenta2 = new THREE.MeshToonMaterial({color: 0xFF00FF});
+				const yellow2 = new THREE.MeshToonMaterial({color: 0xFFFF00});
+				const black2 = new THREE.MeshToonMaterial({color: 0x000000});
+
 				const buttoncyan = new THREE.Mesh(cube, cyan);
 				const buttonmagenta = new THREE.Mesh(cube, magenta);
 				const buttonyellow = new THREE.Mesh(cube, yellow);
 				const buttonblack = new THREE.Mesh(cube, black);
 
-				buttoncyan.userData.name = 'cyan';
-				buttonmagenta.userData.name = 'magenta';
-				buttonyellow.userData.name = 'yellow';
-				buttonblack.userData.name = 'black';
+				buttoncyan.userData.name = cyan;
+				buttonmagenta.userData.name = magenta;
+				buttonyellow.userData.name = yellow;
+				buttonblack.userData.name = black;
 
 				group.position.y = 0.5;
 				group.position.z = -0.5;
@@ -180,10 +144,10 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 
 				const sphere = new THREE.SphereGeometry(0.2,6,4);
 
-				const spherecyan = new THREE.Mesh(sphere, cyan);
-				const spheremagenta = new THREE.Mesh(sphere, magenta);
-				const sphereyellow = new THREE.Mesh(sphere, yellow);
-				const sphereblack = new THREE.Mesh(sphere, black);
+				const spherecyan = new THREE.Mesh(sphere, cyan2);
+				const spheremagenta = new THREE.Mesh(sphere, magenta2);
+				const sphereyellow = new THREE.Mesh(sphere, yellow2);
+				const sphereblack = new THREE.Mesh(sphere, black2);
 
 				groupreactive.position.y = 1;
 				groupreactive.position.z = -1;
@@ -232,6 +196,12 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 
 			}
 
+
+
+
+
+
+
 			function onSelectStart( event ) {
 
 				const controller = event.target;
@@ -243,20 +213,18 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 					const intersection = intersections[ 0 ];
 
 					const object = intersection.object;
-					object.material.emissive.b = 1;
-					controller.attach( object );
 
 					controller.userData.selected = object;
-					if( object.name == cyan){
+					if( object.userData.name == cyan){
 						buttonCyanPress();
 					}
-					if( object.name == magenta){
+					if( object.userData.name == magenta){
 						buttonMagentaPress();
 					}
-					if( object.name == yellow){
+					if( object.userData.name == yellow){
 						buttonYellowPress();
 					}
-					if( object.name == black){
+					if( object.userData.name == black){
 						buttonBlackPress();
 					}
 
@@ -271,8 +239,6 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 				if ( controller.userData.selected !== undefined ) {
 
 					const object = controller.userData.selected;
-					object.material.emissive.b = 0;
-					group.attach( object );
 
 				}
 
@@ -300,7 +266,9 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 					const intersection = intersections[ 0 ];
 
 					const object = intersection.object;
-					object.material.emissive.g = 1;
+					object.material.emissive.r = 0.2;
+					object.material.emissive.g = 0.2;
+					object.material.emissive.b = 0.2;
 					intersected.push( object );
 
 					line.scale.z = intersection.distance;
@@ -319,6 +287,8 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 
 					const object = intersected.pop();
 					object.material.emissive.r = 0;
+					object.material.emissive.g = 0;
+					object.material.emissive.b = 0;
 
 				}
 
@@ -339,7 +309,6 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 				cleanIntersected();
 
 				intersectObjects( controller1 );
-				intersectObjects( controller2 );
 
 				renderer.render( scene, camera );
 
